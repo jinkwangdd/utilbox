@@ -1,6 +1,8 @@
 import { MetadataRoute } from 'next'
 
 export default function robots(): MetadataRoute.Robots {
+  const baseUrl = 'https://utilbox-mu.vercel.app'
+  
   return {
     rules: [
       {
@@ -19,7 +21,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/api/'],
       },
     ],
-    sitemap: 'https://utilbox-mu.vercel.app/sitemap.xml',
-    host: 'https://utilbox-mu.vercel.app',
+    sitemap: `${baseUrl}/sitemap.xml`,
+    host: baseUrl,
   }
 } 
