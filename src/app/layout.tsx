@@ -55,6 +55,7 @@ export default function RootLayout({
     <html lang="ko" suppressHydrationWarning={true}>
       <head>
         <meta name="google-site-verification" content="ige8uZ8BtSMNs1-JbXU0EVhMRyRfcW7hZhCzu8Cl8O8" />
+        <meta name="naver-site-verification" content="6f629171da6d0c67f75e9f4885551e21bf511626" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
