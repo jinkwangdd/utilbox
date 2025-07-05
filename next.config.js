@@ -10,7 +10,7 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/sitemap.xml',
+        source: '/api/sitemap',
         headers: [
           {
             key: 'Content-Type',
@@ -35,28 +35,20 @@ const nextConfig = {
           },
         ],
       },
-      {
-        source: '/api/sitemap',
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'application/xml',
-          },
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=3600, s-maxage=3600',
-          },
-        ],
-      },
     ]
   },
   
-  // 리다이렉트 설정
+  // 리다이렉트 설정 - sitemap.xml을 API 라우트로 리다이렉트
   async redirects() {
     return [
       {
+        source: '/sitemap.xml',
+        destination: '/api/sitemap',
+        permanent: true,
+      },
+      {
         source: '/sitemap',
-        destination: '/sitemap.xml',
+        destination: '/api/sitemap',
         permanent: true,
       },
     ]
