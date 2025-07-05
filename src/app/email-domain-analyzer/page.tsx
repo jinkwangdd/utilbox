@@ -505,7 +505,7 @@ export default function EmailDomainAnalyzerPage() {
             100% { transform: rotate(360deg); }
           }
         `}</style>
-      </div>
+    </div>
     </Layout>
   );
 }

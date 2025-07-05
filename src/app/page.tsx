@@ -245,14 +245,14 @@ export default function Home() {
               );
             })}
           </div>
-        </div>
-      </section>
+          </div>
+        </section>
 
       {/* Advertisement Section */}
       <section style={{ padding: '40px 24px', backgroundColor: '#ffffff' }}>
         <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
           <AdSlot type="banner" />
-        </div>
+                  </div>
       </section>
 
       {/* All Tools Section */}
@@ -265,7 +265,7 @@ export default function Home() {
             <p style={{ fontSize: '18px', color: '#6b7280', maxWidth: '600px', margin: '0 auto' }}>
               카테고리별로 정리된 다양한 도구들을 찾아보세요
             </p>
-          </div>
+                </div>
 
           {/* Category Filter */}
           <div style={{ 
@@ -467,8 +467,8 @@ export default function Home() {
               </p>
             </div>
           </div>
-        </div>
-      </section>
+          </div>
+        </section>
 
       {/* Product Recommendation Section */}
       <section style={{ padding: '80px 24px', backgroundColor: '#ffffff' }}>
@@ -512,7 +512,7 @@ export default function Home() {
             <Zap size={20} />
             도구 둘러보기
           </Button>
-        </div>
+    </div>
       </section>
     </Layout>
   );

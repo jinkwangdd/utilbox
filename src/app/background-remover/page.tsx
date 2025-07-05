@@ -553,7 +553,7 @@ export default function BackgroundRemoverPage() {
                   </div>
                 </div>
               ))}
-            </div>
+        </div>
           </Card>
         )}
 
@@ -563,7 +563,7 @@ export default function BackgroundRemoverPage() {
             100% { transform: rotate(360deg); }
           }
         `}</style>
-      </div>
+    </div>
     </Layout>
   );
 }

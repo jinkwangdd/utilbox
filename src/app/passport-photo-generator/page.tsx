@@ -494,7 +494,7 @@ export default function PassportPhotoGeneratorPage() {
                   </div>
                 </div>
               ))}
-            </div>
+        </div>
           </Card>
         )}
 
@@ -504,7 +504,7 @@ export default function PassportPhotoGeneratorPage() {
             100% { transform: rotate(360deg); }
           }
         `}</style>
-      </div>
+    </div>
     </Layout>
   );
 }
