@@ -29,20 +29,21 @@ export async function POST(request: NextRequest) {
 
     // 이미지 크기 제한 (너무 큰 이미지는 압축)
     const maxDimension = 800;
-    let processedBuffer = buffer;
+    let processedBuffer: Uint8Array = uint8Array;
     
     // sharp로 이미지 메타데이터 확인
-    const metadata = await sharp(buffer).metadata();
+    const metadata = await sharp(uint8Array).metadata();
     
     if (metadata.width && metadata.height && (metadata.width > maxDimension || metadata.height > maxDimension)) {
       console.log('이미지 크기 압축 중...');
-      processedBuffer = await sharp(buffer)
+      const compressedBuffer = await sharp(uint8Array)
         .resize(maxDimension, maxDimension, { 
           fit: 'inside',
           withoutEnlargement: true 
         })
         .png()
         .toBuffer();
+      processedBuffer = new Uint8Array(compressedBuffer);
     }
 
     console.log('배경 제거 처리 중...');
@@ -72,7 +73,7 @@ export async function POST(request: NextRequest) {
 }
 
 // Sharp를 사용한 실제 배경 제거 함수
-async function removeBackgroundWithSharp(buffer: Buffer): Promise<Buffer> {
+async function removeBackgroundWithSharp(buffer: Uint8Array): Promise<Buffer> {
   try {
     // 이미지 메타데이터 가져오기
     const metadata = await sharp(buffer).metadata();
