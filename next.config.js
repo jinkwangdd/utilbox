@@ -10,15 +10,19 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/api/sitemap',
+        source: '/sitemap.xml',
         headers: [
           {
             key: 'Content-Type',
-            value: 'application/xml',
+            value: 'application/xml; charset=utf-8',
           },
           {
             key: 'Cache-Control',
             value: 'public, max-age=3600, s-maxage=3600',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
           },
         ],
       },
@@ -27,39 +31,13 @@ const nextConfig = {
         headers: [
           {
             key: 'Content-Type',
-            value: 'text/plain',
+            value: 'text/plain; charset=utf-8',
           },
           {
             key: 'Cache-Control',
             value: 'public, max-age=3600, s-maxage=3600',
           },
         ],
-      },
-    ]
-  },
-  
-  // 리다이렉트 설정 - sitemap.xml을 API 라우트로 리다이렉트
-  async redirects() {
-    return [
-      {
-        source: '/sitemap.xml',
-        destination: '/api/sitemap',
-        permanent: true,
-      },
-      {
-        source: '/sitemap',
-        destination: '/api/sitemap',
-        permanent: true,
-      },
-    ]
-  },
-  
-  // 재작성 설정 (백업용)
-  async rewrites() {
-    return [
-      {
-        source: '/sitemap-backup.xml',
-        destination: '/api/sitemap',
       },
     ]
   },
