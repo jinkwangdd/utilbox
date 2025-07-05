@@ -30,15 +30,14 @@ export async function POST(request: NextRequest) {
 
     const arrayBuffer = await file.arrayBuffer();
     const uint8Array = new Uint8Array(arrayBuffer);
-    const buffer = Buffer.from(uint8Array);
     
     // 이미지 메타데이터 가져오기
     let metadata;
     try {
-      metadata = await sharp(buffer).metadata();
+      metadata = await sharp(uint8Array).metadata();
     } catch (error) {
       console.error('이미지 메타데이터 읽기 실패:', error);
-      return NextResponse.json({ error: '유효하지 않은 이미지 파일입니다.' }, { status: 400 });
+      return NextResponse.json({ error: '유효하지 않은 이미지 파일입니다.' }, { status: 500 });
     }
     
     if (!metadata.width || !metadata.height) {
@@ -55,12 +54,12 @@ export async function POST(request: NextRequest) {
 
     // 이미지 크기 제한 및 최적화
     const maxDimension = 2000;
-    let processedBuffer = buffer;
+    let processedBuffer: Buffer;
     
     if (metadata.width > maxDimension || metadata.height > maxDimension) {
       console.log('이미지 크기 압축 중...');
       try {
-        processedBuffer = await sharp(buffer)
+        processedBuffer = await sharp(uint8Array)
           .resize(maxDimension, maxDimension, { 
             fit: 'inside',
             withoutEnlargement: true 
@@ -72,10 +71,12 @@ export async function POST(request: NextRequest) {
         console.error('이미지 압축 실패:', error);
         return NextResponse.json({ error: '이미지 처리 중 오류가 발생했습니다.' }, { status: 500 });
       }
+    } else {
+      processedBuffer = Buffer.from(uint8Array);
     }
 
     // 이미지를 JPEG로 변환하여 크기 최적화
-    let optimizedBuffer;
+    let optimizedBuffer: Buffer;
     try {
       optimizedBuffer = await sharp(processedBuffer)
         .jpeg({ quality: 80 })
