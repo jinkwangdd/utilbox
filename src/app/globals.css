@@ -1,0 +1,228 @@
+/* 기본 폰트 설정 */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* 기본 스타일 */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #ffffff;
+  color: #1f1f1f;
+  line-height: 1.6;
+}
+
+/* 기본 버튼 스타일 */
+.btn-primary {
+  background-color: #3b82f6;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: #2563eb;
+}
+
+/* 기본 카드 스타일 */
+.card {
+  background-color: white;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  padding: 24px;
+  transition: border-color 0.2s;
+}
+
+.card:hover {
+  border-color: #3b82f6;
+}
+
+/* 기본 입력 필드 스타일 */
+.input-field {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-field:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* 스크롤바 스타일링 */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+@layer components {
+  /* 기본 버튼 스타일 */
+  .btn-primary {
+    @apply bg-primary text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors duration-200 shadow-none;
+  }
+  
+  .btn-secondary {
+    @apply bg-light text-dark px-6 py-3 rounded-xl font-medium hover:bg-gray-200 transition-colors duration-200;
+  }
+
+  /* 입력 필드 스타일 */
+  .input-field {
+    @apply w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all duration-200 bg-white;
+  }
+
+  /* 카드 스타일 */
+  .card {
+    @apply bg-white rounded-2xl border border-gray-200 hover:border-primary transition-colors duration-200 shadow-none;
+  }
+
+  .card-hover {
+    @apply hover:border-primary transition-colors duration-200;
+  }
+
+  /* 파일 드롭존 스타일 */
+  .file-drop-zone {
+    @apply border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center hover:border-primary transition-colors duration-200 cursor-pointer bg-white;
+  }
+  
+  .file-drop-zone.active {
+    @apply border-primary bg-blue-50;
+  }
+
+  /* 광고 배너 스타일 */
+  .ad-banner {
+    @apply bg-gray-100 rounded-xl px-6 py-4 text-gray-500 text-sm border border-gray-200;
+  }
+
+  /* 헤더 스타일 */
+  .header {
+    @apply bg-white border-b border-gray-200 sticky top-0 z-50 backdrop-blur-sm bg-white/95;
+  }
+
+  /* 검색창 스타일 */
+  .search-input {
+    @apply w-full pl-12 pr-4 py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all duration-200 bg-white shadow-subtle;
+  }
+
+  /* 도구 카드 스타일 */
+  .tool-card {
+    @apply card p-6 flex flex-col items-center text-center group cursor-pointer;
+  }
+
+  .tool-card:hover {
+    @apply card-hover;
+  }
+
+  /* 2단 레이아웃 */
+  .two-column-layout {
+    @apply flex flex-col lg:flex-row gap-8;
+  }
+
+  .input-section {
+    @apply flex-1 bg-white rounded-2xl p-6 border border-gray-200;
+  }
+
+  .result-section {
+    @apply flex-1 bg-light rounded-2xl p-6 border border-gray-200 relative;
+  }
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 광고 컴포넌트 애니메이션 */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* 광고 슬롯 스타일 */
+.ad-slot {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.ad-slot-loading {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* 제품 추천 호버 효과 */
+.product-recommendation {
+  transition: all 0.3s ease;
+}
+
+.product-recommendation:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* 반응형 광고 */
+@media (max-width: 768px) {
+  .google-adsense ins {
+    min-height: 50px;
+  }
+}
+
+/* 광고 로딩 상태 */
+.ad-loading {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
