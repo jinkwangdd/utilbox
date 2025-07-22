@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Head from 'next/head';
 import { 
   Image, 
   FileText, 
@@ -145,6 +146,20 @@ export default function Home() {
 
   return (
     <Layout searchQuery={searchQuery} onSearchChange={setSearchQuery}>
+      <Head>
+        <title>유틸박스 - 막내사원 대신하는 업무 끝판왕 무료 도구 모음, 사무실 필수 사이트</title>
+        <meta name="description" content="사무실에서 꼭 필요한 PDF 변환, 이미지 압축, 배경 제거 등 막내사원 대신하는 무료 온라인 도구를 한 곳에! 업무 자동화, 사무실 필수 사이트, 무료 웹 유틸리티 끝판왕." />
+        <meta name="keywords" content="유틸박스, 업무 끝판왕, 막내사원, 사무실 필수, 무료 도구, PDF 변환, 이미지 압축, 온라인 도구, 업무 자동화, 웹 유틸리티, 사무실 꿀팁, 문서 변환, 추천 사이트, 사무실 추천, 무료 웹사이트, 사무실 업무, 사무실 자동화, 사무실 사이트, 사무실 필수 사이트, 사무실 도구, 사무실 추천 도구, 사무실 업무 자동화, 사무실 무료 도구, 사무실 끝판왕, 사무실 막내사원, 사무실 업무 끝판왕, 사무실 무료 사이트, 사무실 업무 사이트, 사무실 자동화 사이트, 사무실 업무 추천, 사무실 업무 꿀팁, 사무실 업무 도구, 사무실 업무 사이트 추천, 사무실 업무 자동화 사이트, 사무실 업무 무료 사이트, 사무실 업무 끝판왕 사이트, 사무실 업무 필수 사이트, 사무실 업무 필수 도구, 사무실 업무 필수 사이트 추천, 사무실 업무 필수 도구 추천, 사무실 업무 필수 사이트 모음, 사무실 업무 필수 도구 모음, 사무실 업무 필수 사이트 리스트, 사무실 업무 필수 도구 리스트, 사무실 업무 필수 사이트 TOP, 사무실 업무 필수 도구 TOP, 사무실 업무 필수 사이트 BEST, 사무실 업무 필수 도구 BEST, 사무실 업무 필수 사이트 추천 리스트, 사무실 업무 필수 도구 추천 리스트, 사무실 업무 필수 사이트 추천 TOP, 사무실 업무 필수 도구 추천 TOP, 사무실 업무 필수 사이트 추천 BEST, 사무실 업무 필수 도구 추천 BEST" />
+        <meta property="og:title" content="유틸박스 - 막내사원 대신하는 업무 끝판왕 무료 도구 모음, 사무실 필수 사이트" />
+        <meta property="og:description" content="사무실에서 꼭 필요한 PDF 변환, 이미지 압축, 배경 제거 등 막내사원 대신하는 무료 온라인 도구를 한 곳에! 업무 자동화, 사무실 필수 사이트, 무료 웹 유틸리티 끝판왕." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://utilbox-mu.vercel.app" />
+        <meta property="og:site_name" content="유틸박스" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="유틸박스 - 막내사원 대신하는 업무 끝판왕 무료 도구 모음, 사무실 필수 사이트" />
+        <meta name="twitter:description" content="사무실에서 꼭 필요한 PDF 변환, 이미지 압축, 배경 제거 등 막내사원 대신하는 무료 온라인 도구를 한 곳에! 업무 자동화, 사무실 필수 사이트, 무료 웹 유틸리티 끝판왕." />
+        <link rel="canonical" href="https://utilbox-mu.vercel.app" />
+      </Head>
       {/* Hero Section */}
       <section style={{ 
         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',

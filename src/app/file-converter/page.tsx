@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import Layout from '../components/Layout';
 import Card from '../components/Card';
 import Button from '../components/Button';
+import Head from 'next/head';
 
 interface FileWithPreview extends File {
   preview?: string;
@@ -156,6 +157,20 @@ export default function FileConverterPage() {
 
   return (
     <Layout>
+      <Head>
+        <title>파일 형식 변환 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스</title>
+        <meta name="description" content="막내사원 대신하는 파일 형식 변환 도구! 이미지, 문서, 오디오, 비디오 등 모든 파일을 원하는 형식으로 빠르고 쉽게 변환하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+        <meta name="keywords" content="파일 형식 변환, 업무 끝판왕, 막내사원, 사무실 필수, 무료 도구, 이미지 변환, 문서 변환, 온라인 변환, 웹 유틸리티, 업무 자동화" />
+        <meta property="og:title" content="파일 형식 변환 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스" />
+        <meta property="og:description" content="막내사원 대신하는 파일 형식 변환 도구! 이미지, 문서, 오디오, 비디오 등 모든 파일을 원하는 형식으로 빠르고 쉽게 변환하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://utilbox-mu.vercel.app/file-converter" />
+        <meta property="og:site_name" content="유틸박스" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="파일 형식 변환 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스" />
+        <meta name="twitter:description" content="막내사원 대신하는 파일 형식 변환 도구! 이미지, 문서, 오디오, 비디오 등 모든 파일을 원하는 형식으로 빠르고 쉽게 변환하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+        <link rel="canonical" href="https://utilbox-mu.vercel.app/file-converter" />
+      </Head>
       <div style={{ padding: '24px', maxWidth: '1400px', margin: '0 auto' }}>
         {/* 헤더 */}
         <div style={{ marginBottom: '48px' }}>
@@ -520,6 +535,21 @@ export default function FileConverterPage() {
             </div>
           </Card>
         )}
+
+        {/* 추천 도구(내부링크) 섹션 */}
+        <div style={{ marginTop: '48px', padding: '32px', background: '#f8fafc', borderRadius: '16px' }}>
+          <h2 style={{ fontSize: '22px', fontWeight: '700', color: '#1f2937', marginBottom: '20px' }}>
+            이런 도구도 함께 써보세요
+          </h2>
+          <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <Link href="/img-to-pdf" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>IMG to PDF</Link>
+            <Link href="/pdf-tools" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>PDF 도구</Link>
+            <Link href="/image-compressor" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>이미지 압축</Link>
+            <Link href="/qr-code-generator" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>QR 코드 생성</Link>
+            <Link href="/background-remover" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>배경 제거</Link>
+            <Link href="/remove-line-breaks" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>줄바꿈 제거</Link>
+          </div>
+        </div>
 
         <style jsx>{`
           @keyframes spin {

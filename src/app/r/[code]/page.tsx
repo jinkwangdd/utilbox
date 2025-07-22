@@ -7,6 +7,7 @@ import Link from 'next/link';
 import Layout from '../../components/Layout';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
+import Head from 'next/head';
 
 export default function RedirectPage() {
   const params = useParams();
@@ -56,6 +57,20 @@ export default function RedirectPage() {
   if (isLoading) {
     return (
       <Layout>
+        <Head>
+          <title>URL 리다이렉트 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스</title>
+          <meta name="description" content="막내사원 대신하는 URL 리다이렉트! 단축된 URL을 안전하고 빠르게 원본 주소로 이동하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+          <meta name="keywords" content="URL 리다이렉트, 단축 URL, 업무 끝판왕, 막내사원, 사무실 필수, 무료 도구, URL 이동, 웹 유틸리티, 업무 자동화" />
+          <meta property="og:title" content="URL 리다이렉트 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스" />
+          <meta property="og:description" content="막내사원 대신하는 URL 리다이렉트! 단축된 URL을 안전하고 빠르게 원본 주소로 이동하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+          <meta property="og:type" content="website" />
+          <meta property="og:url" content="https://utilbox-mu.vercel.app/r/[code]" />
+          <meta property="og:site_name" content="유틸박스" />
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content="URL 리다이렉트 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스" />
+          <meta name="twitter:description" content="막내사원 대신하는 URL 리다이렉트! 단축된 URL을 안전하고 빠르게 원본 주소로 이동하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+          <link rel="canonical" href="https://utilbox-mu.vercel.app/r/[code]" />
+        </Head>
         <div style={{ 
           padding: '24px', 
           maxWidth: '600px', 
@@ -97,6 +112,20 @@ export default function RedirectPage() {
   if (error) {
     return (
       <Layout>
+        <Head>
+          <title>URL 리다이렉트 오류 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스</title>
+          <meta name="description" content="막내사원 대신하는 URL 리다이렉트! 단축된 URL을 안전하고 빠르게 원본 주소로 이동하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+          <meta name="keywords" content="URL 리다이렉트, 단축 URL, 업무 끝판왕, 막내사원, 사무실 필수, 무료 도구, URL 이동, 웹 유틸리티, 업무 자동화" />
+          <meta property="og:title" content="URL 리다이렉트 오류 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스" />
+          <meta property="og:description" content="막내사원 대신하는 URL 리다이렉트! 단축된 URL을 안전하고 빠르게 원본 주소로 이동하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+          <meta property="og:type" content="website" />
+          <meta property="og:url" content="https://utilbox-mu.vercel.app/r/[code]" />
+          <meta property="og:site_name" content="유틸박스" />
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content="URL 리다이렉트 오류 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스" />
+          <meta name="twitter:description" content="막내사원 대신하는 URL 리다이렉트! 단축된 URL을 안전하고 빠르게 원본 주소로 이동하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+          <link rel="canonical" href="https://utilbox-mu.vercel.app/r/[code]" />
+        </Head>
         <div style={{ 
           padding: '24px', 
           maxWidth: '600px', 
@@ -143,6 +172,20 @@ export default function RedirectPage() {
 
   return (
     <Layout>
+      <Head>
+        <title>URL 리다이렉트 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스</title>
+        <meta name="description" content="막내사원 대신하는 URL 리다이렉트! 단축된 URL을 안전하고 빠르게 원본 주소로 이동하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+        <meta name="keywords" content="URL 리다이렉트, 단축 URL, 업무 끝판왕, 막내사원, 사무실 필수, 무료 도구, URL 이동, 웹 유틸리티, 업무 자동화" />
+        <meta property="og:title" content="URL 리다이렉트 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스" />
+        <meta property="og:description" content="막내사원 대신하는 URL 리다이렉트! 단축된 URL을 안전하고 빠르게 원본 주소로 이동하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://utilbox-mu.vercel.app/r/[code]" />
+        <meta property="og:site_name" content="유틸박스" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="URL 리다이렉트 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스" />
+        <meta name="twitter:description" content="막내사원 대신하는 URL 리다이렉트! 단축된 URL을 안전하고 빠르게 원본 주소로 이동하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+        <link rel="canonical" href="https://utilbox-mu.vercel.app/r/[code]" />
+      </Head>
       <div style={{ 
         padding: '24px', 
         maxWidth: '600px', 

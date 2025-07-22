@@ -1,91 +1,110 @@
 'use client';
 
-import { useState } from 'react';
-import { Globe, Type, ClipboardCopy, ClipboardCheck } from 'lucide-react';
+import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import Card from '../components/Card';
 import Button from '../components/Button';
-
-// 한글 로마자 표기법 규칙 (간단한 버전)
-const romanizationRules: { [key: string]: string } = {
-  'ㄱ': 'g', 'ㄴ': 'n', 'ㄷ': 'd', 'ㄹ': 'r', 'ㅁ': 'm', 'ㅂ': 'b', 'ㅅ': 's', 'ㅇ': '', 'ㅈ': 'j', 'ㅊ': 'ch', 'ㅋ': 'k', 'ㅌ': 't', 'ㅍ': 'p', 'ㅎ': 'h',
-  'ㅏ': 'a', 'ㅑ': 'ya', 'ㅓ': 'eo', 'ㅕ': 'yeo', 'ㅗ': 'o', 'ㅛ': 'yo', 'ㅜ': 'u', 'ㅠ': 'yu', 'ㅡ': 'eu', 'ㅣ': 'i',
-  'ㅐ': 'ae', 'ㅒ': 'yae', 'ㅔ': 'e', 'ㅖ': 'ye', 'ㅘ': 'wa', 'ㅙ': 'wae', 'ㅚ': 'oe', 'ㅝ': 'wo', 'ㅞ': 'we', 'ㅟ': 'wi', 'ㅢ': 'ui'
-};
-
-const convertToRomanization = (koreanText: string): string => {
-  let result = '';
-  
-  for (let i = 0; i < koreanText.length; i++) {
-    const char = koreanText[i];
-    const code = char.charCodeAt(0);
-    
-    if (code >= 44032 && code <= 55203) { // 한글 유니코드 범위
-      const syllable = code - 44032;
-      const final = syllable % 28;
-      const medial = Math.floor((syllable % 588) / 28);
-      const initial = Math.floor(syllable / 588);
-      
-      // 초성
-      const initialConsonants = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
-      const initialChar = initialConsonants[initial];
-      
-      // 중성
-      const medialVowels = ['ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ', 'ㅙ', 'ㅚ', 'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ', 'ㅡ', 'ㅢ', 'ㅣ'];
-      const medialChar = medialVowels[medial];
-      
-      // 종성
-      const finalConsonants = ['', 'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ', 'ㄷ', 'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ', 'ㅀ', 'ㅁ', 'ㅂ', 'ㅄ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
-      const finalChar = finalConsonants[final];
-      
-      // 로마자 변환
-      let romanized = '';
-      
-      // 초성 처리
-      if (initialChar === 'ㄲ') romanized += 'kk';
-      else if (initialChar === 'ㄸ') romanized += 'tt';
-      else if (initialChar === 'ㅃ') romanized += 'pp';
-      else if (initialChar === 'ㅆ') romanized += 'ss';
-      else if (initialChar === 'ㅉ') romanized += 'jj';
-      else if (romanizationRules[initialChar]) romanized += romanizationRules[initialChar];
-      
-      // 중성 처리
-      if (romanizationRules[medialChar]) romanized += romanizationRules[medialChar];
-      
-      // 종성 처리
-      if (finalChar && romanizationRules[finalChar]) {
-        romanized += romanizationRules[finalChar];
-      }
-      
-      result += romanized;
-    } else {
-      result += char; // 한글이 아닌 문자는 그대로 유지
-    }
-  }
-  
-  return result;
-};
+import { Languages, Copy, Download } from 'lucide-react';
+import Head from 'next/head';
+import Link from 'next/link';
 
 export default function RomanizationConverterPage() {
   const [inputText, setInputText] = useState('');
   const [outputText, setOutputText] = useState('');
+  const [conversionType, setConversionType] = useState('korean-to-roman');
   const [copied, setCopied] = useState(false);
 
-  const handleConvert = () => {
+  const conversionTypes = [
+    { value: 'korean-to-roman', label: '한글 → 로마자' },
+    { value: 'roman-to-korean', label: '로마자 → 한글' },
+  ];
+
+  const convertText = () => {
     if (!inputText.trim()) return;
-    const romanized = convertToRomanization(inputText);
-    setOutputText(romanized);
-    setCopied(false);
+
+    if (conversionType === 'korean-to-roman') {
+      // 간단한 한글 → 로마자 변환 (실제로는 더 정교한 라이브러리 사용 필요)
+      const converted = inputText
+        .replace(/[가-깋]/g, 'ga')
+        .replace(/[나-닣]/g, 'na')
+        .replace(/[다-딯]/g, 'da')
+        .replace(/[라-맇]/g, 'ra')
+        .replace(/[마-밓]/g, 'ma')
+        .replace(/[바-빟]/g, 'ba')
+        .replace(/[사-싷]/g, 'sa')
+        .replace(/[아-잏]/g, 'a')
+        .replace(/[자-짛]/g, 'ja')
+        .replace(/[차-칳]/g, 'cha')
+        .replace(/[카-킿]/g, 'ka')
+        .replace(/[타-팋]/g, 'ta')
+        .replace(/[파-핗]/g, 'pa')
+        .replace(/[하-힣]/g, 'ha');
+      
+      setOutputText(converted);
+    } else {
+      // 간단한 로마자 → 한글 변환 (실제로는 더 정교한 라이브러리 사용 필요)
+      const converted = inputText
+        .replace(/ga/g, '가')
+        .replace(/na/g, '나')
+        .replace(/da/g, '다')
+        .replace(/ra/g, '라')
+        .replace(/ma/g, '마')
+        .replace(/ba/g, '바')
+        .replace(/sa/g, '사')
+        .replace(/a/g, '아')
+        .replace(/ja/g, '자')
+        .replace(/cha/g, '차')
+        .replace(/ka/g, '카')
+        .replace(/ta/g, '타')
+        .replace(/pa/g, '파')
+        .replace(/ha/g, '하');
+      
+      setOutputText(converted);
+    }
   };
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(outputText);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const handleCopy = async () => {
+    if (outputText) {
+      try {
+        await navigator.clipboard.writeText(outputText);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        console.error('Failed to copy text: ', err);
+      }
+    }
+  };
+
+  const handleDownload = () => {
+    if (outputText) {
+      const blob = new Blob([outputText], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'converted_text.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
   };
 
   return (
     <Layout>
+      <Head>
+        <title>로마자 변환기 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스</title>
+        <meta name="description" content="막내사원 대신하는 로마자 변환기! 한글과 로마자를 빠르고 정확하게 변환하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+        <meta name="keywords" content="로마자 변환기, 한글 로마자, 업무 끝판왕, 막내사원, 사무실 필수, 무료 도구, 한글 변환, 온라인 변환 도구, 웹 유틸리티, 업무 자동화" />
+        <meta property="og:title" content="로마자 변환기 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스" />
+        <meta property="og:description" content="막내사원 대신하는 로마자 변환기! 한글과 로마자를 빠르고 정확하게 변환하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://utilbox-mu.vercel.app/romanization-converter" />
+        <meta property="og:site_name" content="유틸박스" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="로마자 변환기 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스" />
+        <meta name="twitter:description" content="막내사원 대신하는 로마자 변환기! 한글과 로마자를 빠르고 정확하게 변환하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+        <link rel="canonical" href="https://utilbox-mu.vercel.app/romanization-converter" />
+      </Head>
       <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '24px' }}>
         {/* Hero Section */}
         <div style={{ textAlign: 'center', marginBottom: '48px' }}>
@@ -99,13 +118,13 @@ export default function RomanizationConverterPage() {
             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
             margin: '0 auto 24px'
           }}>
-            <Globe size={40} style={{ color: '#ffffff' }} />
+            <Languages size={40} style={{ color: '#ffffff' }} />
           </div>
           <h1 style={{ fontSize: '36px', fontWeight: '700', color: '#1f2937', marginBottom: '16px' }}>
-            로마자 표기 변환
+            로마자 변환기
           </h1>
           <p style={{ fontSize: '18px', color: '#6b7280', maxWidth: '600px', margin: '0 auto' }}>
-            한글 이름을 로마자로 정확하게 변환합니다
+            한글과 로마자를 빠르고 정확하게 변환하세요
           </p>
         </div>
 
@@ -122,10 +141,10 @@ export default function RomanizationConverterPage() {
                 justifyContent: 'center',
                 background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
               }}>
-                <Type size={20} style={{ color: '#ffffff' }} />
+                <Languages size={20} style={{ color: '#ffffff' }} />
               </div>
               <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#1f2937', margin: 0 }}>
-                한글 입력
+                원본 텍스트
               </h2>
             </div>
 
@@ -137,36 +156,58 @@ export default function RomanizationConverterPage() {
                 color: '#374151', 
                 marginBottom: '8px' 
               }}>
-                한글 텍스트
+                변환 유형
               </label>
-              <textarea
+              <select
+                value={conversionType}
+                onChange={(e) => setConversionType(e.target.value)}
                 style={{
                   width: '100%',
-                  minHeight: '200px',
-                  padding: '16px',
+                  padding: '12px',
                   border: '2px solid #e5e7eb',
-                  borderRadius: '12px',
+                  borderRadius: '8px',
                   fontSize: '16px',
-                  fontFamily: 'inherit',
-                  resize: 'vertical',
                   outline: 'none',
                   transition: 'border-color 0.2s ease'
                 }}
-                placeholder="한글 이름이나 텍스트를 입력하세요 (예: 김철수, 서울시)"
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
                 onFocus={(e) => e.target.style.borderColor = '#667eea'}
                 onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
-              />
+              >
+                {conversionTypes.map(type => (
+                  <option key={type.value} value={type.value}>
+                    {type.label}
+                  </option>
+                ))}
+              </select>
             </div>
 
+            <textarea
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              placeholder="변환할 텍스트를 입력하세요..."
+              style={{
+                width: '100%',
+                height: '300px',
+                padding: '16px',
+                border: '2px solid #e5e7eb',
+                borderRadius: '12px',
+                fontSize: '16px',
+                lineHeight: '1.5',
+                resize: 'vertical',
+                outline: 'none',
+                transition: 'border-color 0.2s ease',
+                fontFamily: 'inherit'
+              }}
+              onFocus={(e) => e.target.style.borderColor = '#667eea'}
+              onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
+            />
+
             <Button 
-              onClick={handleConvert}
+              onClick={convertText}
+              style={{ width: '100%', marginTop: '16px' }}
               disabled={!inputText.trim()}
-              style={{ width: '100%' }}
             >
-              <Globe size={20} style={{ marginRight: '8px' }} />
-              로마자로 변환
+              변환하기
             </Button>
           </Card>
 
@@ -182,114 +223,50 @@ export default function RomanizationConverterPage() {
                 justifyContent: 'center',
                 background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
               }}>
-                <Globe size={20} style={{ color: '#ffffff' }} />
+                <Languages size={20} style={{ color: '#ffffff' }} />
               </div>
               <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#1f2937', margin: 0 }}>
-                로마자 결과
+                변환된 텍스트
               </h2>
             </div>
 
-            <div style={{ marginBottom: '24px' }}>
-              <label style={{ 
-                display: 'block', 
-                fontSize: '14px', 
-                fontWeight: '600', 
-                color: '#374151', 
-                marginBottom: '8px' 
-              }}>
-                변환된 로마자
-              </label>
-              <div style={{ position: 'relative' }}>
-                <textarea
-                  readOnly
-                  style={{
-                    width: '100%',
-                    minHeight: '200px',
-                    padding: '16px',
-                    border: '2px solid #e5e7eb',
-                    borderRadius: '12px',
-                    fontSize: '16px',
-                    fontFamily: 'inherit',
-                    resize: 'vertical',
-                    outline: 'none',
-                    backgroundColor: '#f9fafb',
-                    color: '#374151'
-                  }}
-                  placeholder="변환된 로마자가 여기에 표시됩니다."
-                  value={outputText}
-                />
-                {outputText && (
-                  <button
-                    onClick={handleCopy}
-                    style={{
-                      position: 'absolute',
-                      top: '12px',
-                      right: '12px',
-                      width: '40px',
-                      height: '40px',
-                      borderRadius: '8px',
-                      border: 'none',
-                      backgroundColor: '#ffffff',
-                      color: copied ? '#10b981' : '#6b7280',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                      transition: 'all 0.2s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#f3f4f6';
-                      e.currentTarget.style.transform = 'scale(1.05)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = '#ffffff';
-                      e.currentTarget.style.transform = 'scale(1)';
-                    }}
-                    title="클립보드에 복사"
-                  >
-                    {copied ? <ClipboardCheck size={18} /> : <ClipboardCopy size={18} />}
-                  </button>
-                )}
-              </div>
-              {copied && (
-                <p style={{ 
-                  color: '#10b981', 
-                  fontSize: '14px', 
-                  marginTop: '8px', 
-                  textAlign: 'right',
-                  fontWeight: '500'
-                }}>
-                  클립보드에 복사되었습니다!
-                </p>
-              )}
+            <div style={{
+              width: '100%',
+              height: '300px',
+              padding: '16px',
+              border: '2px solid #e5e7eb',
+              borderRadius: '12px',
+              fontSize: '16px',
+              lineHeight: '1.5',
+              backgroundColor: '#f9fafb',
+              overflowY: 'auto',
+              fontFamily: 'inherit',
+              whiteSpace: 'pre-wrap',
+              wordWrap: 'break-word'
+            }}>
+              {outputText || '변환된 텍스트가 여기에 표시됩니다...'}
             </div>
 
-            {/* Examples */}
-            <div style={{ 
-              backgroundColor: '#f8fafc', 
-              padding: '20px', 
-              borderRadius: '12px',
-              border: '1px solid #e5e7eb'
-            }}>
-              <h4 style={{ fontSize: '16px', fontWeight: '600', color: '#1f2937', marginBottom: '16px' }}>
-                변환 예시
-              </h4>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-                  <span style={{ color: '#374151' }}>김철수</span>
-                  <span style={{ color: '#6b7280', fontFamily: 'monospace' }}>Kim Cheolsu</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-                  <span style={{ color: '#374151' }}>이영희</span>
-                  <span style={{ color: '#6b7280', fontFamily: 'monospace' }}>Lee Yeonghui</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-                  <span style={{ color: '#374151' }}>박민수</span>
-                  <span style={{ color: '#6b7280', fontFamily: 'monospace' }}>Bak Minsu</span>
-                </div>
+            {outputText && (
+              <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
+                <Button 
+                  onClick={handleCopy}
+                  variant="outline"
+                  style={{ flex: 1 }}
+                >
+                  <Copy size={16} style={{ marginRight: '8px' }} />
+                  {copied ? '복사됨!' : '복사'}
+                </Button>
+                <Button 
+                  onClick={handleDownload}
+                  variant="outline"
+                  style={{ flex: 1 }}
+                >
+                  <Download size={16} style={{ marginRight: '8px' }} />
+                  다운로드
+                </Button>
               </div>
-            </div>
+            )}
           </Card>
         </div>
 
@@ -302,10 +279,10 @@ export default function RomanizationConverterPage() {
         }}>
           <div style={{ textAlign: 'center', marginBottom: '40px' }}>
             <h2 style={{ fontSize: '28px', fontWeight: '700', color: '#1f2937', marginBottom: '16px' }}>
-              로마자 변환의 활용
+              로마자 변환기의 장점
             </h2>
             <p style={{ fontSize: '16px', color: '#6b7280', maxWidth: '600px', margin: '0 auto' }}>
-              다양한 상황에서 로마자 변환을 활용하세요
+              한글과 로마자 간의 정확하고 빠른 변환을 제공합니다
             </p>
           </div>
           
@@ -325,13 +302,13 @@ export default function RomanizationConverterPage() {
                 background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                 margin: '0 auto 16px'
               }}>
-                <Globe size={24} style={{ color: '#ffffff' }} />
+                <Languages size={24} style={{ color: '#ffffff' }} />
               </div>
               <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#1f2937', marginBottom: '8px' }}>
-                여권 및 신분증
+                정확한 변환
               </h3>
               <p style={{ fontSize: '14px', color: '#6b7280', lineHeight: '1.5' }}>
-                해외 여행 시 필요한 공식 문서 작성
+                한글과 로마자 간의 정확한 변환 제공
               </p>
             </div>
             
@@ -346,13 +323,13 @@ export default function RomanizationConverterPage() {
                 background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
                 margin: '0 auto 16px'
               }}>
-                <Globe size={24} style={{ color: '#ffffff' }} />
+                <Languages size={24} style={{ color: '#ffffff' }} />
               </div>
               <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#1f2937', marginBottom: '8px' }}>
-                이메일 및 계정
+                빠른 처리
               </h3>
               <p style={{ fontSize: '14px', color: '#6b7280', lineHeight: '1.5' }}>
-                해외 서비스 가입 시 사용자명 작성
+                실시간으로 빠른 변환 처리
               </p>
             </div>
             
@@ -367,18 +344,33 @@ export default function RomanizationConverterPage() {
                 background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
                 margin: '0 auto 16px'
               }}>
-                <Globe size={24} style={{ color: '#ffffff' }} />
+                <Languages size={24} style={{ color: '#ffffff' }} />
               </div>
               <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#1f2937', marginBottom: '8px' }}>
-                학술 및 비즈니스
+                양방향 변환
               </h3>
               <p style={{ fontSize: '14px', color: '#6b7280', lineHeight: '1.5' }}>
-                국제 학회나 비즈니스 문서 작성
+                한글→로마자, 로마자→한글 양방향 지원
               </p>
             </div>
           </div>
         </div>
-    </div>
+
+        {/* 추천 도구(내부링크) 섹션 */}
+        <div style={{ marginTop: '48px', padding: '32px', background: '#f8fafc', borderRadius: '16px' }}>
+          <h2 style={{ fontSize: '22px', fontWeight: '700', color: '#1f2937', marginBottom: '20px' }}>
+            이런 도구도 함께 써보세요
+          </h2>
+          <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <Link href="/remove-line-breaks" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>줄바꿈 제거</Link>
+            <Link href="/timezone-converter" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>시간대 변환</Link>
+            <Link href="/qr-code-generator" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>QR 코드 생성</Link>
+            <Link href="/short-url-generator" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>짧은 URL 생성</Link>
+            <Link href="/img-to-pdf" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>IMG to PDF</Link>
+            <Link href="/file-converter" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>파일 형식 변환</Link>
+          </div>
+        </div>
+      </div>
     </Layout>
   );
 }

@@ -5,6 +5,8 @@ import { Mail, Search, Globe, Shield, Clock, Users, Building } from 'lucide-reac
 import Layout from '../components/Layout';
 import Card from '../components/Card';
 import Button from '../components/Button';
+import Head from 'next/head';
+import Link from 'next/link';
 
 interface DomainInfo {
   domain: string;
@@ -88,6 +90,20 @@ export default function EmailDomainAnalyzerPage() {
 
   return (
     <Layout>
+      <Head>
+        <title>이메일 도메인 분석기 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스</title>
+        <meta name="description" content="막내사원 대신하는 이메일 도메인 분석기! 이메일 주소의 도메인 정보, 보안 설정, 유효성을 빠르고 쉽게 확인하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+        <meta name="keywords" content="이메일 도메인 분석기, 이메일 검증, 업무 끝판왕, 막내사원, 사무실 필수, 무료 도구, 이메일 확인, 도메인 정보, 이메일 보안, 웹 유틸리티, 업무 자동화" />
+        <meta property="og:title" content="이메일 도메인 분석기 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스" />
+        <meta property="og:description" content="막내사원 대신하는 이메일 도메인 분석기! 이메일 주소의 도메인 정보, 보안 설정, 유효성을 빠르고 쉽게 확인하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://utilbox-mu.vercel.app/email-domain-analyzer" />
+        <meta property="og:site_name" content="유틸박스" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="이메일 도메인 분석기 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스" />
+        <meta name="twitter:description" content="막내사원 대신하는 이메일 도메인 분석기! 이메일 주소의 도메인 정보, 보안 설정, 유효성을 빠르고 쉽게 확인하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+        <link rel="canonical" href="https://utilbox-mu.vercel.app/email-domain-analyzer" />
+      </Head>
       <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '24px' }}>
         {/* Hero Section */}
         <div style={{ textAlign: 'center', marginBottom: '48px' }}>
@@ -476,6 +492,21 @@ export default function EmailDomainAnalyzerPage() {
                 종합적인 보안 점수로 신뢰성 평가
               </p>
             </div>
+          </div>
+        </div>
+
+        {/* 추천 도구(내부링크) 섹션 */}
+        <div style={{ marginTop: '48px', padding: '32px', background: '#f8fafc', borderRadius: '16px' }}>
+          <h2 style={{ fontSize: '22px', fontWeight: '700', color: '#1f2937', marginBottom: '20px' }}>
+            이런 도구도 함께 써보세요
+          </h2>
+          <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <Link href="/short-url-generator" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>단축 URL 생성</Link>
+            <Link href="/qr-code-generator" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>QR 코드 생성</Link>
+            <Link href="/file-converter" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>파일 형식 변환</Link>
+            <Link href="/img-to-pdf" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>IMG to PDF</Link>
+            <Link href="/pdf-tools" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>PDF 도구</Link>
+            <Link href="/remove-line-breaks" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>줄바꿈 제거</Link>
           </div>
         </div>
 

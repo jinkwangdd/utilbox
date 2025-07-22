@@ -1,510 +1,397 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import { useDropzone } from 'react-dropzone';
-import { Upload, Camera, Download, Trash2, ArrowLeft, Settings, CheckCircle, Globe } from 'lucide-react';
-import Link from 'next/link';
-import toast from 'react-hot-toast';
+import React, { useState, useRef } from 'react';
 import Layout from '../components/Layout';
 import Card from '../components/Card';
 import Button from '../components/Button';
-
-interface FileWithPreview extends File {
-  preview?: string;
-}
-
-interface ProcessedFile {
-  original: FileWithPreview;
-  country: string;
-  background: string;
-  downloadUrl?: string;
-}
-
-const COUNTRIES = [
-  { code: 'korea', name: '대한민국', size: '35x45mm' },
-  { code: 'usa', name: '미국', size: '50x50mm' },
-  { code: 'japan', name: '일본', size: '35x45mm' },
-  { code: 'china', name: '중국', size: '33x48mm' },
-  { code: 'uk', name: '영국', size: '35x45mm' },
-  { code: 'schengen', name: '유럽(스켕겐)', size: '35x45mm' }
-];
-
-const BACKGROUNDS = [
-  { value: 'white', name: '흰색 배경' },
-  { value: 'blue', name: '파란색 배경' },
-  { value: 'gray', name: '회색 배경' }
-];
+import { Camera, Download, Upload } from 'lucide-react';
+import Head from 'next/head';
+import Link from 'next/link';
 
 export default function PassportPhotoGeneratorPage() {
-  const [files, setFiles] = useState<FileWithPreview[]>([]);
-  const [processedFiles, setProcessedFiles] = useState<ProcessedFile[]>([]);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [selectedCountry, setSelectedCountry] = useState('korea');
-  const [selectedBackground, setSelectedBackground] = useState('white');
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [processedImageSrc, setProcessedImageSrc] = useState<string | null>(null);
+  const [photoSize, setPhotoSize] = useState('35x45');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    const newFiles = acceptedFiles.map(file => 
-      Object.assign(file, {
-        preview: URL.createObjectURL(file)
-      })
-    );
-    setFiles(prev => [...prev, ...newFiles]);
-  }, []);
+  const photoSizes = [
+    { value: '35x45', label: '여권사진 (35x45mm)', width: 413, height: 531 },
+    { value: '3x4', label: '증명사진 3x4 (3x4cm)', width: 354, height: 472 },
+    { value: '4x6', label: '증명사진 4x6 (4x6cm)', width: 472, height: 708 },
+  ];
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: {
-      'image/*': ['.jpeg', '.jpg', '.png']
-    },
-    multiple: true
-  });
-
-  const removeFile = (index: number) => {
-    setFiles(prev => {
-      const newFiles = prev.filter((_, i) => i !== index);
-      return newFiles;
-    });
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImageSrc(e.target?.result as string);
+        setProcessedImageSrc(null);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
-  const generatePassportPhoto = async () => {
-    if (files.length === 0) {
-      toast.error('처리할 이미지를 선택해주세요.');
-      return;
-    }
+  const handleGeneratePhoto = () => {
+    if (!imageSrc || !canvasRef.current) return;
 
-    setIsProcessing(true);
-    toast.loading('여권사진 생성 중...');
+    const img = new window.Image();
+    img.src = imageSrc;
+    img.onload = () => {
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext('2d');
 
-    try {
-      const newProcessedFiles: ProcessedFile[] = [];
+      if (ctx) {
+        const selectedSize = photoSizes.find(size => size.value === photoSize);
+        if (!selectedSize) return;
 
-      for (const file of files) {
-        const formData = new FormData();
-        formData.append('image', file);
-        formData.append('country', selectedCountry);
-        formData.append('background', selectedBackground);
+        // 캔버스 크기 설정 (300 DPI 기준)
+        canvas.width = selectedSize.width;
+        canvas.height = selectedSize.height;
 
-        const response = await fetch('/api/image/passport-photo', {
-          method: 'POST',
-          body: formData,
-        });
+        // 흰색 배경
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        if (!response.ok) {
-          throw new Error('여권사진 생성에 실패했습니다.');
-        }
+        // 이미지 그리기 (비율 유지하면서 중앙 정렬)
+        const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
+        const scaledWidth = img.width * scale;
+        const scaledHeight = img.height * scale;
+        const x = (canvas.width - scaledWidth) / 2;
+        const y = (canvas.height - scaledHeight) / 2;
 
-        const blob = await response.blob();
-        const downloadUrl = URL.createObjectURL(blob);
-        
-        newProcessedFiles.push({
-          original: file,
-          country: selectedCountry,
-          background: selectedBackground,
-          downloadUrl
-        });
+        ctx.drawImage(img, x, y, scaledWidth, scaledHeight);
+
+        setProcessedImageSrc(canvas.toDataURL('image/png'));
       }
-
-      setProcessedFiles(prev => [...prev, ...newProcessedFiles]);
-      setFiles([]);
-      toast.success('여권사진 생성이 완료되었습니다!');
-    } catch (error) {
-      console.error('처리 오류:', error);
-      toast.error('처리 중 오류가 발생했습니다.');
-    } finally {
-      setIsProcessing(false);
-    }
+    };
   };
 
-  const downloadFile = (processedFile: ProcessedFile) => {
-    if (processedFile.downloadUrl) {
+  const handleDownload = () => {
+    if (processedImageSrc) {
       const link = document.createElement('a');
-      link.href = processedFile.downloadUrl;
-      link.download = `passport-photo-${processedFile.country}.jpg`;
-      document.body.appendChild(link);
+      link.download = `passport_photo_${photoSize}.png`;
+      link.href = processedImageSrc;
       link.click();
-      document.body.removeChild(link);
-      toast.success('파일이 다운로드되었습니다.');
     }
-  };
-
-  const clearAll = () => {
-    setFiles([]);
-    setProcessedFiles([]);
-    toast.success('모든 파일이 제거되었습니다.');
-  };
-
-  const getCountryName = (code: string) => {
-    return COUNTRIES.find(country => country.code === code)?.name || code;
-  };
-
-  const getCountrySize = (code: string) => {
-    return COUNTRIES.find(country => country.code === code)?.size || '';
   };
 
   return (
     <Layout>
-      <div style={{ padding: '24px', maxWidth: '1400px', margin: '0 auto' }}>
-        {/* 헤더 */}
-        <div style={{ marginBottom: '48px' }}>
-          <Link href="/" style={{ 
-            display: 'inline-flex', 
-            alignItems: 'center', 
-            color: '#6b7280', 
-            textDecoration: 'none',
-            marginBottom: '24px',
-            fontSize: '16px',
-            fontWeight: '500'
-          }}>
-            <ArrowLeft size={20} style={{ marginRight: '8px' }} />
-            홈으로 돌아가기
-          </Link>
-          <div style={{ textAlign: 'center' }}>
-            <h1 style={{ 
-              fontSize: '48px', 
-              fontWeight: '800', 
-              color: '#1f2937', 
-              marginBottom: '16px',
-              lineHeight: '1.2'
-            }}>
-              여권사진 생성
-            </h1>
-            <p style={{ 
-              fontSize: '20px', 
-              color: '#6b7280', 
-              maxWidth: '600px', 
-              margin: '0 auto',
-              lineHeight: '1.6'
-            }}>
-              사진을 각국 여권 규격에 맞게 편집하고 생성하세요. 정확한 크기와 배경으로 여권사진을 만들 수 있습니다.
-            </p>
-          </div>
-        </div>
-
-        {/* 설정 영역 */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: '1fr 1fr', 
-          gap: '32px',
-          marginBottom: '48px'
-        }}>
-          {/* 국가 선택 */}
-          <Card variant="default">
-            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px' }}>
-              <Globe size={24} style={{ color: '#667eea', marginRight: '12px' }} />
-              <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#1f2937', margin: 0 }}>
-                국가 선택
-              </h2>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-              {COUNTRIES.map((country) => (
-                <button
-                  key={country.code}
-                  onClick={() => setSelectedCountry(country.code)}
-                  style={{
-                    padding: '12px 16px',
-                    border: selectedCountry === country.code ? '2px solid #667eea' : '1px solid #e5e7eb',
-                    borderRadius: '12px',
-                    backgroundColor: selectedCountry === country.code ? '#f0f4ff' : '#ffffff',
-                    cursor: 'pointer',
-                    textAlign: 'left',
-                    transition: 'all 0.2s ease'
-                  }}
-                >
-                  <div style={{ fontSize: '14px', fontWeight: '600', color: '#1f2937', marginBottom: '4px' }}>
-                    {country.name}
-                  </div>
-                  <div style={{ fontSize: '12px', color: '#6b7280' }}>
-                    {country.size}
-                  </div>
-                </button>
-              ))}
-            </div>
-          </Card>
-
-          {/* 배경 선택 */}
-          <Card variant="default">
-            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px' }}>
-              <Settings size={24} style={{ color: '#667eea', marginRight: '12px' }} />
-              <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#1f2937', margin: 0 }}>
-                배경 선택
-              </h2>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {BACKGROUNDS.map((bg) => (
-                <button
-                  key={bg.value}
-                  onClick={() => setSelectedBackground(bg.value)}
-                  style={{
-                    padding: '12px 16px',
-                    border: selectedBackground === bg.value ? '2px solid #667eea' : '1px solid #e5e7eb',
-                    borderRadius: '12px',
-                    backgroundColor: selectedBackground === bg.value ? '#f0f4ff' : '#ffffff',
-                    cursor: 'pointer',
-                    textAlign: 'left',
-                    transition: 'all 0.2s ease'
-                  }}
-                >
-                  <div style={{ fontSize: '14px', fontWeight: '600', color: '#1f2937' }}>
-                    {bg.name}
-                  </div>
-                </button>
-              ))}
-            </div>
-          </Card>
-        </div>
-
-        {/* 파일 업로드 영역 */}
-        <Card variant="default" style={{ marginBottom: '32px' }}>
+      <Head>
+        <title>여권사진 생성기 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스</title>
+        <meta name="description" content="막내사원 대신하는 여권사진 생성기! 업로드한 사진을 여권사진 규격에 맞게 자동으로 변환하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+        <meta name="keywords" content="여권사진 생성기, 증명사진, 업무 끝판왕, 막내사원, 사무실 필수, 무료 도구, 여권사진, 온라인 사진 편집, 웹 유틸리티, 업무 자동화" />
+        <meta property="og:title" content="여권사진 생성기 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스" />
+        <meta property="og:description" content="막내사원 대신하는 여권사진 생성기! 업로드한 사진을 여권사진 규격에 맞게 자동으로 변환하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://utilbox-mu.vercel.app/passport-photo-generator" />
+        <meta property="og:site_name" content="유틸박스" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="여권사진 생성기 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스" />
+        <meta name="twitter:description" content="막내사원 대신하는 여권사진 생성기! 업로드한 사진을 여권사진 규격에 맞게 자동으로 변환하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+        <link rel="canonical" href="https://utilbox-mu.vercel.app/passport-photo-generator" />
+      </Head>
+      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '24px' }}>
+        {/* Hero Section */}
+        <div style={{ textAlign: 'center', marginBottom: '48px' }}>
           <div style={{ 
-            border: '2px dashed #d1d5db', 
-            borderRadius: '16px', 
-            padding: '48px 24px',
-            textAlign: 'center',
-            backgroundColor: isDragActive ? '#f3f4f6' : '#ffffff',
-            transition: 'all 0.2s ease',
-            cursor: 'pointer'
-          }} {...getRootProps()}>
-            <input {...getInputProps()} />
-            <Upload size={48} style={{ color: '#667eea', marginBottom: '16px' }} />
-            <h3 style={{ 
-              fontSize: '20px', 
-              fontWeight: '600', 
-              color: '#1f2937', 
-              marginBottom: '8px' 
-            }}>
-              {isDragActive ? '여기에 파일을 놓으세요' : '사진을 드래그 앤 드롭하거나 클릭하여 선택하세요'}
-            </h3>
-            <p style={{ 
-              fontSize: '16px', 
-              color: '#6b7280', 
-              marginBottom: '16px' 
-            }}>
-              JPG, PNG 형식 지원 (최대 10MB)
-            </p>
-            <Button variant="primary" size="lg">
-              사진 선택
-            </Button>
+            width: '80px', 
+            height: '80px', 
+            borderRadius: '20px', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            margin: '0 auto 24px'
+          }}>
+            <Camera size={40} style={{ color: '#ffffff' }} />
           </div>
-        </Card>
+          <h1 style={{ fontSize: '36px', fontWeight: '700', color: '#1f2937', marginBottom: '16px' }}>
+            여권사진 생성기
+          </h1>
+          <p style={{ fontSize: '18px', color: '#6b7280', maxWidth: '600px', margin: '0 auto' }}>
+            업로드한 사진을 여권사진 규격에 맞게 자동으로 변환하세요
+          </p>
+        </div>
 
-        {/* 업로드된 파일 목록 */}
-        {files.length > 0 && (
-          <Card variant="default" style={{ marginBottom: '32px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-              <h3 style={{ fontSize: '20px', fontWeight: '600', color: '#1f2937', margin: 0 }}>
-                업로드된 사진 ({files.length})
-              </h3>
-              <Button 
-                variant="secondary" 
-                onClick={generatePassportPhoto}
-                disabled={isProcessing}
-                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
-              >
-                {isProcessing ? (
-                  <>
-                    <div style={{ 
-                      width: '16px', 
-                      height: '16px', 
-                      border: '2px solid #ffffff', 
-                      borderTop: '2px solid transparent', 
-                      borderRadius: '50%', 
-                      animation: 'spin 1s linear infinite' 
-                    }} />
-                    생성 중...
-                  </>
-                ) : (
-                  <>
-                    <Camera size={16} />
-                    여권사진 생성
-                  </>
-                )}
-              </Button>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px', marginBottom: '48px' }}>
+          {/* Upload Section */}
+          <Card variant="elevated">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
+              <div style={{ 
+                width: '40px', 
+                height: '40px', 
+                borderRadius: '10px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+              }}>
+                <Upload size={20} style={{ color: '#ffffff' }} />
+              </div>
+              <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#1f2937', margin: 0 }}>
+                사진 업로드
+              </h2>
             </div>
 
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', 
-              gap: '16px' 
-            }}>
-              {files.map((file, index) => (
-                <div key={index} style={{ 
-                  position: 'relative',
-                  border: '1px solid #e5e7eb',
-                  borderRadius: '12px',
-                  overflow: 'hidden',
-                  backgroundColor: '#f9fafb'
-                }}>
+            <div style={{ marginBottom: '24px' }}>
+              <label style={{ 
+                display: 'block', 
+                fontSize: '14px', 
+                fontWeight: '600', 
+                color: '#374151', 
+                marginBottom: '8px' 
+              }}>
+                사진 크기 선택
+              </label>
+              <select
+                value={photoSize}
+                onChange={(e) => setPhotoSize(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  border: '2px solid #e5e7eb',
+                  borderRadius: '8px',
+                  fontSize: '16px',
+                  outline: 'none',
+                  transition: 'border-color 0.2s ease'
+                }}
+                onFocus={(e) => e.target.style.borderColor = '#667eea'}
+                onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
+              >
+                {photoSizes.map(size => (
+                  <option key={size.value} value={size.value}>
+                    {size.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <label
+              htmlFor="photo-upload"
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '100%',
+                height: '200px',
+                border: '2px dashed #e5e7eb',
+                borderRadius: '12px',
+                cursor: 'pointer',
+                backgroundColor: '#f9fafb',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#f3f4f6';
+                e.currentTarget.style.borderColor = '#667eea';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#f9fafb';
+                e.currentTarget.style.borderColor = '#e5e7eb';
+              }}
+            >
+              <Upload size={48} style={{ color: '#9ca3af', marginBottom: '12px' }} />
+              <p style={{ fontSize: '16px', color: '#6b7280', textAlign: 'center' }}>
+                클릭하거나 사진을 여기에 드래그하세요
+              </p>
+              <input 
+                id="photo-upload" 
+                type="file" 
+                style={{ display: 'none' }} 
+                accept="image/*" 
+                onChange={handleImageUpload}
+                ref={fileInputRef}
+              />
+            </label>
+
+            {imageSrc && (
+              <div style={{ marginTop: '24px' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
                   <img 
-                    src={file.preview} 
-                    alt={file.name}
+                    src={imageSrc} 
+                    alt="Uploaded" 
                     style={{ 
-                      width: '100%', 
-                      height: '150px', 
-                      objectFit: 'cover' 
+                      maxWidth: '100%', 
+                      maxHeight: '200px', 
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
                     }} 
                   />
-                  <div style={{ padding: '12px' }}>
-                    <p style={{ 
-                      fontSize: '14px', 
-                      fontWeight: '500', 
-                      color: '#1f2937', 
-                      margin: '0 0 4px 0',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap'
-                    }}>
-                      {file.name}
-                    </p>
-                    <p style={{ 
-                      fontSize: '12px', 
-                      color: '#6b7280', 
-                      margin: '0 0 8px 0' 
-                    }}>
-                      {(file.size / 1024 / 1024).toFixed(2)} MB
-                    </p>
-                    <Button 
-                      variant="danger" 
-                      size="sm"
-                      onClick={() => removeFile(index)}
-                      style={{ width: '100%' }}
-                    >
-                      <Trash2 size={14} />
-                      제거
-                    </Button>
-                  </div>
                 </div>
-              ))}
-            </div>
+                <Button 
+                  onClick={handleGeneratePhoto}
+                  style={{ width: '100%' }}
+                >
+                  <Camera size={20} style={{ marginRight: '8px' }} />
+                  여권사진 생성
+                </Button>
+              </div>
+            )}
           </Card>
-        )}
 
-        {/* 처리된 파일 목록 */}
-        {processedFiles.length > 0 && (
-          <Card variant="default">
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-              <h3 style={{ fontSize: '20px', fontWeight: '600', color: '#1f2937', margin: 0 }}>
-                생성된 여권사진 ({processedFiles.length})
-              </h3>
-              <Button variant="secondary" onClick={clearAll}>
-                모두 지우기
-              </Button>
+          {/* Result Section */}
+          <Card variant="elevated">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
+              <div style={{ 
+                width: '40px', 
+                height: '40px', 
+                borderRadius: '10px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+              }}>
+                <Camera size={20} style={{ color: '#ffffff' }} />
+              </div>
+              <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#1f2937', margin: 0 }}>
+                생성된 여권사진
+              </h2>
             </div>
 
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', 
-              gap: '24px' 
-            }}>
-              {processedFiles.map((processedFile, index) => (
-                <div key={index} style={{ 
-                  border: '1px solid #e5e7eb',
-                  borderRadius: '12px',
-                  overflow: 'hidden',
-                  backgroundColor: '#ffffff'
-                }}>
-                  <div style={{ 
-                    display: 'grid', 
-                    gridTemplateColumns: '1fr 1fr', 
-                    gap: '1px',
-                    backgroundColor: '#e5e7eb'
-                  }}>
-                    <div style={{ 
-                      position: 'relative',
-                      backgroundColor: '#f9fafb',
-                      padding: '16px',
-                      textAlign: 'center'
-                    }}>
-                      <img 
-                        src={processedFile.original.preview} 
-                        alt="원본"
-                        style={{ 
-                          maxWidth: '100%', 
-                          maxHeight: '150px', 
-                          objectFit: 'contain' 
-                        }} 
-                      />
-                      <p style={{ 
-                        fontSize: '12px', 
-                        color: '#6b7280', 
-                        margin: '8px 0 0 0' 
-                      }}>
-                        원본
-                      </p>
-                    </div>
-                    <div style={{ 
-                      position: 'relative',
-                      backgroundColor: '#f9fafb',
-                      padding: '16px',
-                      textAlign: 'center'
-                    }}>
-                      <img 
-                        src={processedFile.downloadUrl} 
-                        alt="여권사진"
-                        style={{ 
-                          maxWidth: '100%', 
-                          maxHeight: '150px', 
-                          objectFit: 'contain' 
-                        }} 
-                      />
-                      <p style={{ 
-                        fontSize: '12px', 
-                        color: '#6b7280', 
-                        margin: '8px 0 0 0' 
-                      }}>
-                        여권사진
-                      </p>
-                    </div>
-                  </div>
-                  <div style={{ padding: '16px' }}>
-                    <div style={{ marginBottom: '12px' }}>
-                      <p style={{ 
-                        fontSize: '14px', 
-                        fontWeight: '500', 
-                        color: '#1f2937', 
-                        margin: '0 0 4px 0',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap'
-                      }}>
-                        {processedFile.original.name}
-                      </p>
-                      <p style={{ 
-                        fontSize: '12px', 
-                        color: '#6b7280', 
-                        margin: '0 0 4px 0' 
-                      }}>
-                        {getCountryName(processedFile.country)} ({getCountrySize(processedFile.country)})
-                      </p>
-                      <p style={{ 
-                        fontSize: '12px', 
-                        color: '#6b7280', 
-                        margin: 0 
-                      }}>
-                        배경: {BACKGROUNDS.find(bg => bg.value === processedFile.background)?.name}
-                      </p>
-                    </div>
-                    <Button 
-                      variant="primary" 
-                      onClick={() => downloadFile(processedFile)}
-                      style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
-                    >
-                      <Download size={16} />
-                      다운로드
-                    </Button>
-                  </div>
+            {processedImageSrc ? (
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
+                  <img 
+                    src={processedImageSrc} 
+                    alt="Processed" 
+                    style={{ 
+                      maxWidth: '100%', 
+                      maxHeight: '300px', 
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                      border: '1px solid #e5e7eb'
+                    }} 
+                  />
                 </div>
-              ))}
+                <Button 
+                  onClick={handleDownload}
+                  style={{ width: '100%' }}
+                >
+                  <Download size={20} style={{ marginRight: '8px' }} />
+                  다운로드
+                </Button>
+              </div>
+            ) : (
+              <div style={{ 
+                textAlign: 'center', 
+                padding: '40px 20px',
+                color: '#9ca3af'
+              }}>
+                <Camera size={48} style={{ marginBottom: '16px', opacity: 0.5 }} />
+                <p style={{ fontSize: '16px' }}>
+                  사진을 업로드하고 생성 버튼을 클릭하면 여기서 확인할 수 있습니다
+                </p>
+              </div>
+            )}
+          </Card>
         </div>
-          </Card>
-        )}
 
-        <style jsx>{`
-          @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
-        `}</style>
-    </div>
+        {/* Features Section */}
+        <div style={{ 
+          backgroundColor: '#f8fafc', 
+          padding: '48px 24px', 
+          borderRadius: '16px',
+          marginBottom: '48px'
+        }}>
+          <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+            <h2 style={{ fontSize: '28px', fontWeight: '700', color: '#1f2937', marginBottom: '16px' }}>
+              여권사진 생성기의 장점
+            </h2>
+            <p style={{ fontSize: '16px', color: '#6b7280', maxWidth: '600px', margin: '0 auto' }}>
+              정확한 규격으로 여권사진을 생성하여 시간과 비용을 절약하세요
+            </p>
+          </div>
+          
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
+            gap: '24px' 
+          }}>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ 
+                width: '48px', 
+                height: '48px', 
+                borderRadius: '12px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                margin: '0 auto 16px'
+              }}>
+                <Camera size={24} style={{ color: '#ffffff' }} />
+              </div>
+              <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#1f2937', marginBottom: '8px' }}>
+                정확한 규격
+              </h3>
+              <p style={{ fontSize: '14px', color: '#6b7280', lineHeight: '1.5' }}>
+                여권사진 표준 규격에 맞춰 정확하게 생성
+              </p>
+            </div>
+            
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ 
+                width: '48px', 
+                height: '48px', 
+                borderRadius: '12px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                margin: '0 auto 16px'
+              }}>
+                <Camera size={24} style={{ color: '#ffffff' }} />
+              </div>
+              <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#1f2937', marginBottom: '8px' }}>
+                시간 절약
+              </h3>
+              <p style={{ fontSize: '14px', color: '#6b7280', lineHeight: '1.5' }}>
+                사진관 방문 없이 집에서 바로 생성
+              </p>
+            </div>
+            
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ 
+                width: '48px', 
+                height: '48px', 
+                borderRadius: '12px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                margin: '0 auto 16px'
+              }}>
+                <Camera size={24} style={{ color: '#ffffff' }} />
+              </div>
+              <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#1f2937', marginBottom: '8px' }}>
+                비용 절약
+              </h3>
+              <p style={{ fontSize: '14px', color: '#6b7280', lineHeight: '1.5' }}>
+                사진관 비용 없이 무료로 생성 가능
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <canvas ref={canvasRef} style={{ display: 'none' }}></canvas>
+
+        {/* 추천 도구(내부링크) 섹션 */}
+        <div style={{ marginTop: '48px', padding: '32px', background: '#f8fafc', borderRadius: '16px' }}>
+          <h2 style={{ fontSize: '22px', fontWeight: '700', color: '#1f2937', marginBottom: '20px' }}>
+            이런 도구도 함께 써보세요
+          </h2>
+          <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <Link href="/background-remover" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>배경 제거</Link>
+            <Link href="/image-compressor" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>이미지 압축</Link>
+            <Link href="/image-resizer" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>이미지 크기 조절</Link>
+            <Link href="/img-to-pdf" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>IMG to PDF</Link>
+            <Link href="/file-converter" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>파일 형식 변환</Link>
+            <Link href="/qr-code-generator" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>QR 코드 생성</Link>
+          </div>
+        </div>
+      </div>
     </Layout>
   );
 }

@@ -1,39 +1,111 @@
 'use client';
 
-import { useState } from 'react';
-import { ClipboardCopy, ClipboardCheck, Type } from 'lucide-react';
+import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import Card from '../components/Card';
 import Button from '../components/Button';
+import { Type, Copy, Download } from 'lucide-react';
+import Head from 'next/head';
+import Link from 'next/link';
 
 export default function CaseConverterPage() {
   const [inputText, setInputText] = useState('');
   const [outputText, setOutputText] = useState('');
+  const [conversionType, setConversionType] = useState('uppercase');
   const [copied, setCopied] = useState(false);
 
-  const toUpperCase = () => {
-    setOutputText(inputText.toUpperCase());
-    setCopied(false);
+  const conversionTypes = [
+    { value: 'uppercase', label: '대문자로 변환' },
+    { value: 'lowercase', label: '소문자로 변환' },
+    { value: 'titlecase', label: '제목 케이스로 변환' },
+    { value: 'sentencecase', label: '문장 케이스로 변환' },
+    { value: 'camelcase', label: '카멜 케이스로 변환' },
+    { value: 'snakecase', label: '스네이크 케이스로 변환' },
+    { value: 'kebabcase', label: '케밥 케이스로 변환' },
+  ];
+
+  const convertText = () => {
+    if (!inputText.trim()) return;
+
+    let converted = '';
+    switch (conversionType) {
+      case 'uppercase':
+        converted = inputText.toUpperCase();
+        break;
+      case 'lowercase':
+        converted = inputText.toLowerCase();
+        break;
+      case 'titlecase':
+        converted = inputText.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
+        break;
+      case 'sentencecase':
+        converted = inputText.toLowerCase().replace(/(^\w|\.\s+\w)/g, (char) => char.toUpperCase());
+        break;
+      case 'camelcase':
+        converted = inputText.toLowerCase()
+          .replace(/[^a-zA-Z0-9\s]/g, '')
+          .replace(/\s+(.)/g, (match, char) => char.toUpperCase())
+          .replace(/^./, (char) => char.toLowerCase());
+        break;
+      case 'snakecase':
+        converted = inputText.toLowerCase()
+          .replace(/[^a-zA-Z0-9\s]/g, '')
+          .replace(/\s+/g, '_');
+        break;
+      case 'kebabcase':
+        converted = inputText.toLowerCase()
+          .replace(/[^a-zA-Z0-9\s]/g, '')
+          .replace(/\s+/g, '-');
+        break;
+      default:
+        converted = inputText;
+    }
+    
+    setOutputText(converted);
   };
 
-  const toLowerCase = () => {
-    setOutputText(inputText.toLowerCase());
-    setCopied(false);
+  const handleCopy = async () => {
+    if (outputText) {
+      try {
+        await navigator.clipboard.writeText(outputText);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        console.error('Failed to copy text: ', err);
+      }
+    }
   };
 
-  const toCapitalize = () => {
-    setOutputText(inputText.replace(/(^|\s)\S/g, (char) => char.toUpperCase()));
-    setCopied(false);
-  };
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(outputText);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const handleDownload = () => {
+    if (outputText) {
+      const blob = new Blob([outputText], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'converted_text.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
   };
 
   return (
     <Layout>
+      <Head>
+        <title>대소문자 변환기 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스</title>
+        <meta name="description" content="막내사원 대신하는 대소문자 변환기! 텍스트의 대소문자를 다양한 형식으로 빠르고 정확하게 변환하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+        <meta name="keywords" content="대소문자 변환기, 텍스트 변환, 업무 끝판왕, 막내사원, 사무실 필수, 무료 도구, 텍스트 편집, 온라인 텍스트 도구, 웹 유틸리티, 업무 자동화" />
+        <meta property="og:title" content="대소문자 변환기 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스" />
+        <meta property="og:description" content="막내사원 대신하는 대소문자 변환기! 텍스트의 대소문자를 다양한 형식으로 빠르고 정확하게 변환하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://utilbox-mu.vercel.app/case-converter" />
+        <meta property="og:site_name" content="유틸박스" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="대소문자 변환기 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스" />
+        <meta name="twitter:description" content="막내사원 대신하는 대소문자 변환기! 텍스트의 대소문자를 다양한 형식으로 빠르고 정확하게 변환하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+        <link rel="canonical" href="https://utilbox-mu.vercel.app/case-converter" />
+      </Head>
       <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '24px' }}>
         {/* Hero Section */}
         <div style={{ textAlign: 'center', marginBottom: '48px' }}>
@@ -50,10 +122,10 @@ export default function CaseConverterPage() {
             <Type size={40} style={{ color: '#ffffff' }} />
           </div>
           <h1 style={{ fontSize: '36px', fontWeight: '700', color: '#1f2937', marginBottom: '16px' }}>
-            대소문자 변환
+            대소문자 변환기
           </h1>
           <p style={{ fontSize: '18px', color: '#6b7280', maxWidth: '600px', margin: '0 auto' }}>
-            텍스트의 대소문자를 원하는 형식으로 변환하여 일관된 문서를 만드세요
+            텍스트의 대소문자를 다양한 형식으로 빠르고 정확하게 변환하세요
           </p>
         </div>
 
@@ -73,7 +145,7 @@ export default function CaseConverterPage() {
                 <Type size={20} style={{ color: '#ffffff' }} />
               </div>
               <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#1f2937', margin: 0 }}>
-                텍스트 입력
+                원본 텍스트
               </h2>
             </div>
 
@@ -85,52 +157,59 @@ export default function CaseConverterPage() {
                 color: '#374151', 
                 marginBottom: '8px' 
               }}>
-                원본 텍스트
+                변환 유형
               </label>
-              <textarea
+              <select
+                value={conversionType}
+                onChange={(e) => setConversionType(e.target.value)}
                 style={{
                   width: '100%',
-                  minHeight: '200px',
-                  padding: '16px',
+                  padding: '12px',
                   border: '2px solid #e5e7eb',
-                  borderRadius: '12px',
+                  borderRadius: '8px',
                   fontSize: '16px',
-                  fontFamily: 'inherit',
-                  resize: 'vertical',
                   outline: 'none',
                   transition: 'border-color 0.2s ease'
                 }}
-                placeholder="여기에 대소문자를 변환할 텍스트를 입력하세요..."
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
                 onFocus={(e) => e.target.style.borderColor = '#667eea'}
                 onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
-              />
+              >
+                {conversionTypes.map(type => (
+                  <option key={type.value} value={type.value}>
+                    {type.label}
+                  </option>
+                ))}
+              </select>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '12px' }}>
-              <Button 
-                onClick={toUpperCase}
-                disabled={!inputText.trim()}
-                style={{ fontSize: '14px' }}
-              >
-                모두 대문자로
-              </Button>
-              <Button 
-                onClick={toLowerCase}
-                disabled={!inputText.trim()}
-                style={{ fontSize: '14px' }}
-              >
-                모두 소문자로
-              </Button>
-              <Button 
-                onClick={toCapitalize}
-                disabled={!inputText.trim()}
-                style={{ fontSize: '14px' }}
-              >
-                첫 글자만 대문자로
-              </Button>
-            </div>
+            <textarea
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              placeholder="변환할 텍스트를 입력하세요..."
+              style={{
+                width: '100%',
+                height: '300px',
+                padding: '16px',
+                border: '2px solid #e5e7eb',
+                borderRadius: '12px',
+                fontSize: '16px',
+                lineHeight: '1.5',
+                resize: 'vertical',
+                outline: 'none',
+                transition: 'border-color 0.2s ease',
+                fontFamily: 'inherit'
+              }}
+              onFocus={(e) => e.target.style.borderColor = '#667eea'}
+              onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
+            />
+
+            <Button 
+              onClick={convertText}
+              style={{ width: '100%', marginTop: '16px' }}
+              disabled={!inputText.trim()}
+            >
+              변환하기
+            </Button>
           </Card>
 
           {/* Output Section */}
@@ -145,159 +224,50 @@ export default function CaseConverterPage() {
                 justifyContent: 'center',
                 background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
               }}>
-                <ClipboardCheck size={20} style={{ color: '#ffffff' }} />
+                <Type size={20} style={{ color: '#ffffff' }} />
               </div>
               <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#1f2937', margin: 0 }}>
-                변환 결과
+                변환된 텍스트
               </h2>
             </div>
 
-            <div style={{ marginBottom: '24px' }}>
-              <label style={{ 
-                display: 'block', 
-                fontSize: '14px', 
-                fontWeight: '600', 
-                color: '#374151', 
-                marginBottom: '8px' 
-              }}>
-                변환된 텍스트
-              </label>
-              <div style={{ position: 'relative' }}>
-                <textarea
-                  readOnly
-                  style={{
-                    width: '100%',
-                    minHeight: '200px',
-                    padding: '16px',
-                    border: '2px solid #e5e7eb',
-                    borderRadius: '12px',
-                    fontSize: '16px',
-                    fontFamily: 'inherit',
-                    resize: 'vertical',
-                    outline: 'none',
-                    backgroundColor: '#f9fafb',
-                    color: '#374151'
-                  }}
-                  placeholder="변환된 텍스트가 여기에 표시됩니다."
-                  value={outputText}
-                />
-                {outputText && (
-                  <button
-                    onClick={handleCopy}
-                    style={{
-                      position: 'absolute',
-                      top: '12px',
-                      right: '12px',
-                      width: '40px',
-                      height: '40px',
-                      borderRadius: '8px',
-                      border: 'none',
-                      backgroundColor: '#ffffff',
-                      color: copied ? '#10b981' : '#6b7280',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                      transition: 'all 0.2s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#f3f4f6';
-                      e.currentTarget.style.transform = 'scale(1.05)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = '#ffffff';
-                      e.currentTarget.style.transform = 'scale(1)';
-                    }}
-                    title="클립보드에 복사"
-                  >
-                    {copied ? <ClipboardCheck size={18} /> : <ClipboardCopy size={18} />}
-                  </button>
-                )}
-              </div>
-              {copied && (
-                <p style={{ 
-                  color: '#10b981', 
-                  fontSize: '14px', 
-                  marginTop: '8px', 
-                  textAlign: 'right',
-                  fontWeight: '500'
-                }}>
-                  클립보드에 복사되었습니다!
-                </p>
-              )}
+            <div style={{
+              width: '100%',
+              height: '300px',
+              padding: '16px',
+              border: '2px solid #e5e7eb',
+              borderRadius: '12px',
+              fontSize: '16px',
+              lineHeight: '1.5',
+              backgroundColor: '#f9fafb',
+              overflowY: 'auto',
+              fontFamily: 'inherit',
+              whiteSpace: 'pre-wrap',
+              wordWrap: 'break-word'
+            }}>
+              {outputText || '변환된 텍스트가 여기에 표시됩니다...'}
             </div>
 
-            {/* Usage Instructions */}
-            <div style={{ 
-              backgroundColor: '#f8fafc', 
-              padding: '20px', 
-              borderRadius: '12px',
-              border: '1px solid #e5e7eb'
-            }}>
-              <h4 style={{ fontSize: '16px', fontWeight: '600', color: '#1f2937', marginBottom: '16px' }}>
-                사용법
-              </h4>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <div style={{ 
-                    width: '24px', 
-                    height: '24px', 
-                    borderRadius: '50%', 
-                    backgroundColor: '#667eea',
-                    color: '#ffffff',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '12px',
-                    fontWeight: '600'
-                  }}>
-                    1
-                  </div>
-                  <span style={{ fontSize: '14px', color: '#6b7280' }}>
-                    텍스트를 입력하거나 붙여넣기 하세요
-                  </span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <div style={{ 
-                    width: '24px', 
-                    height: '24px', 
-                    borderRadius: '50%', 
-                    backgroundColor: '#667eea',
-                    color: '#ffffff',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '12px',
-                    fontWeight: '600'
-                  }}>
-                    2
-                  </div>
-                  <span style={{ fontSize: '14px', color: '#6b7280' }}>
-                    원하는 변환 버튼을 클릭하세요
-                  </span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <div style={{ 
-                    width: '24px', 
-                    height: '24px', 
-                    borderRadius: '50%', 
-                    backgroundColor: '#667eea',
-                    color: '#ffffff',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '12px',
-                    fontWeight: '600'
-                  }}>
-                    3
-                  </div>
-                  <span style={{ fontSize: '14px', color: '#6b7280' }}>
-                    결과를 복사하여 사용하세요
-                  </span>
-                </div>
+            {outputText && (
+              <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
+                <Button 
+                  onClick={handleCopy}
+                  variant="outline"
+                  style={{ flex: 1 }}
+                >
+                  <Copy size={16} style={{ marginRight: '8px' }} />
+                  {copied ? '복사됨!' : '복사'}
+                </Button>
+                <Button 
+                  onClick={handleDownload}
+                  variant="outline"
+                  style={{ flex: 1 }}
+                >
+                  <Download size={16} style={{ marginRight: '8px' }} />
+                  다운로드
+                </Button>
               </div>
-            </div>
+            )}
           </Card>
         </div>
 
@@ -310,10 +280,10 @@ export default function CaseConverterPage() {
         }}>
           <div style={{ textAlign: 'center', marginBottom: '40px' }}>
             <h2 style={{ fontSize: '28px', fontWeight: '700', color: '#1f2937', marginBottom: '16px' }}>
-              다양한 변환 옵션
+              대소문자 변환기의 장점
             </h2>
             <p style={{ fontSize: '16px', color: '#6b7280', maxWidth: '600px', margin: '0 auto' }}>
-              텍스트의 용도에 맞는 최적의 대소문자 형식을 선택하세요
+              다양한 텍스트 형식 변환을 통해 업무 효율성을 높이세요
             </p>
           </div>
           
@@ -336,10 +306,10 @@ export default function CaseConverterPage() {
                 <Type size={24} style={{ color: '#ffffff' }} />
               </div>
               <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#1f2937', marginBottom: '8px' }}>
-                모두 대문자
+                다양한 형식
               </h3>
               <p style={{ fontSize: '14px', color: '#6b7280', lineHeight: '1.5' }}>
-                제목, 강조, 공지사항 등에 적합합니다
+                대문자, 소문자, 제목 케이스 등 다양한 형식 지원
               </p>
             </div>
             
@@ -357,10 +327,10 @@ export default function CaseConverterPage() {
                 <Type size={24} style={{ color: '#ffffff' }} />
               </div>
               <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#1f2937', marginBottom: '8px' }}>
-                모두 소문자
+                빠른 변환
               </h3>
               <p style={{ fontSize: '14px', color: '#6b7280', lineHeight: '1.5' }}>
-                일반 텍스트, 이메일, 메모 등에 적합합니다
+                실시간으로 빠르고 정확한 텍스트 변환
               </p>
             </div>
             
@@ -378,12 +348,27 @@ export default function CaseConverterPage() {
                 <Type size={24} style={{ color: '#ffffff' }} />
               </div>
               <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#1f2937', marginBottom: '8px' }}>
-                첫 글자만 대문자
+                프로그래밍 지원
               </h3>
               <p style={{ fontSize: '14px', color: '#6b7280', lineHeight: '1.5' }}>
-                문장, 제목, 이름 등에 적합합니다
+                카멜 케이스, 스네이크 케이스 등 프로그래밍 형식 지원
               </p>
             </div>
+          </div>
+        </div>
+
+        {/* 추천 도구(내부링크) 섹션 */}
+        <div style={{ marginTop: '48px', padding: '32px', background: '#f8fafc', borderRadius: '16px' }}>
+          <h2 style={{ fontSize: '22px', fontWeight: '700', color: '#1f2937', marginBottom: '20px' }}>
+            이런 도구도 함께 써보세요
+          </h2>
+          <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <Link href="/remove-line-breaks" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>줄바꿈 제거</Link>
+            <Link href="/romanization-converter" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>로마자 변환</Link>
+            <Link href="/timezone-converter" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>시간대 변환</Link>
+            <Link href="/qr-code-generator" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>QR 코드 생성</Link>
+            <Link href="/short-url-generator" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>짧은 URL 생성</Link>
+            <Link href="/img-to-pdf" style={{ color: '#2563eb', fontWeight: '600', fontSize: '16px' }}>IMG to PDF</Link>
           </div>
         </div>
       </div>
