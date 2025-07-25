@@ -148,17 +148,17 @@ export default function BackgroundRemoverPage() {
   return (
     <Layout>
       <Head>
-        <title>배경 제거 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스</title>
-        <meta name="description" content="막내사원 대신하는 배경 제거 도구! AI 기술로 이미지 배경을 자동으로 제거하여 투명 배경 이미지를 빠르고 쉽게 만들 수 있습니다. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
-        <meta name="keywords" content="배경 제거, AI 배경 제거, 업무 끝판왕, 막내사원, 사무실 필수, 무료 도구, 투명 배경, 이미지 편집, 온라인 배경 제거, 웹 유틸리티, 업무 자동화" />
-        <meta property="og:title" content="배경 제거 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스" />
-        <meta property="og:description" content="막내사원 대신하는 배경 제거 도구! AI 기술로 이미지 배경을 자동으로 제거하여 투명 배경 이미지를 빠르고 쉽게 만들 수 있습니다. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+        <title>배경 제거하기 - AI 무료 온라인 배경 제거 도구 | 유틸박스</title>
+        <meta name="description" content="AI 배경 제거 무료 온라인 도구! 이미지 배경을 자동으로 제거하여 투명 배경 이미지를 만들 수 있습니다. 고품질, 4K 지원, 즉시 다운로드." />
+        <meta name="keywords" content="배경 제거, AI 배경 제거, 투명 배경, 이미지 배경 제거, 온라인 배경 제거, 무료 배경 제거, 사진 배경 제거, AI 이미지 편집, 배경 제거 도구" />
+        <meta property="og:title" content="배경 제거하기 - AI 무료 온라인 배경 제거 도구 | 유틸박스" />
+        <meta property="og:description" content="AI 배경 제거 무료 온라인 도구! 이미지 배경을 자동으로 제거하여 투명 배경 이미지를 만들 수 있습니다. 고품질, 4K 지원, 즉시 다운로드." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://utilbox-mu.vercel.app/background-remover" />
         <meta property="og:site_name" content="유틸박스" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="배경 제거 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스" />
-        <meta name="twitter:description" content="막내사원 대신하는 배경 제거 도구! AI 기술로 이미지 배경을 자동으로 제거하여 투명 배경 이미지를 빠르고 쉽게 만들 수 있습니다. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+        <meta name="twitter:title" content="배경 제거하기 - AI 무료 온라인 배경 제거 도구 | 유틸박스" />
+        <meta name="twitter:description" content="AI 배경 제거 무료 온라인 도구! 이미지 배경을 자동으로 제거하여 투명 배경 이미지를 만들 수 있습니다. 고품질, 4K 지원, 즉시 다운로드." />
         <link rel="canonical" href="https://utilbox-mu.vercel.app/background-remover" />
       </Head>
       <div style={{ padding: '24px', maxWidth: '1400px', margin: '0 auto' }}>

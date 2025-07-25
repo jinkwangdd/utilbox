@@ -31,7 +31,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/api/'],
       },
     ],
-    sitemap: '/sitemap.xml',
+    sitemap: 'https://utilbox-mu.vercel.app/sitemap.xml',
     host: baseUrl,
   }
 } 

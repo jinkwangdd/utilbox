@@ -100,17 +100,17 @@ export default function PdfToImagePage() {
   return (
     <Layout>
       <Head>
-        <title>PDF to Image 변환 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스</title>
-        <meta name="description" content="막내사원 대신하는 PDF to Image 변환 도구! PDF 파일을 고품질 이미지로 빠르고 쉽게 변환하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
-        <meta name="keywords" content="PDF to Image, PDF 이미지 변환, 업무 끝판왕, 막내사원, 사무실 필수, 무료 도구, PDF 이미지, 온라인 PDF 변환, 웹 유틸리티, 업무 자동화" />
-        <meta property="og:title" content="PDF to Image 변환 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스" />
-        <meta property="og:description" content="막내사원 대신하는 PDF to Image 변환 도구! PDF 파일을 고품질 이미지로 빠르고 쉽게 변환하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+        <title>PDF를 이미지로 변환하기 - PDF → JPG/PNG 무료 온라인 변환기 | 유틸박스</title>
+        <meta name="description" content="PDF를 이미지로 변환하는 무료 온라인 도구! PDF 파일의 모든 페이지를 고품질 JPG, PNG 이미지로 변환하세요. 고품질, 무료, 즉시 다운로드." />
+        <meta name="keywords" content="PDF 이미지 변환, PDF to Image, PDF JPG 변환, PDF PNG 변환, 온라인 PDF 변환기, 무료 PDF 변환, PDF 페이지 이미지, PDF 스크린샷" />
+        <meta property="og:title" content="PDF를 이미지로 변환하기 - PDF → JPG/PNG 무료 온라인 변환기 | 유틸박스" />
+        <meta property="og:description" content="PDF를 이미지로 변환하는 무료 온라인 도구! PDF 파일의 모든 페이지를 고품질 JPG, PNG 이미지로 변환하세요. 고품질, 무료, 즉시 다운로드." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://utilbox-mu.vercel.app/pdf-to-image" />
         <meta property="og:site_name" content="유틸박스" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="PDF to Image 변환 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스" />
-        <meta name="twitter:description" content="막내사원 대신하는 PDF to Image 변환 도구! PDF 파일을 고품질 이미지로 빠르고 쉽게 변환하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+        <meta name="twitter:title" content="PDF를 이미지로 변환하기 - PDF → JPG/PNG 무료 온라인 변환기 | 유틸박스" />
+        <meta name="twitter:description" content="PDF를 이미지로 변환하는 무료 온라인 도구! PDF 파일의 모든 페이지를 고품질 JPG, PNG 이미지로 변환하세요. 고품질, 무료, 즉시 다운로드." />
         <link rel="canonical" href="https://utilbox-mu.vercel.app/pdf-to-image" />
       </Head>
       <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '24px' }}>

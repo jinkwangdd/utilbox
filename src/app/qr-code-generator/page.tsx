@@ -85,17 +85,17 @@ export default function QrCodeGeneratorPage() {
   return (
     <Layout>
       <Head>
-        <title>QR 코드 생성기 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스</title>
-        <meta name="description" content="막내사원 대신하는 QR 코드 생성기! 텍스트, URL, 연락처 정보를 QR 코드로 빠르고 쉽게 변환하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
-        <meta name="keywords" content="QR 코드 생성기, 업무 끝판왕, 막내사원, 사무실 필수, 무료 도구, QR 코드, 온라인 QR, 웹 유틸리티, 업무 자동화" />
-        <meta property="og:title" content="QR 코드 생성기 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스" />
-        <meta property="og:description" content="막내사원 대신하는 QR 코드 생성기! 텍스트, URL, 연락처 정보를 QR 코드로 빠르고 쉽게 변환하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+        <title>QR코드 생성하기 - URL/텍스트/연락처 무료 온라인 QR코드 생성기 | 유틸박스</title>
+        <meta name="description" content="QR코드 생성 무료 온라인 도구! URL, 텍스트, 연락처 정보를 QR코드로 빠르고 쉽게 변환하세요. 커스터마이징 가능, 고품질, 즉시 다운로드." />
+        <meta name="keywords" content="QR코드 생성, QR코드 생성기, URL QR코드, 텍스트 QR코드, 연락처 QR코드, 온라인 QR코드, 무료 QR코드, QR코드 만들기, QR코드 생성기 온라인" />
+        <meta property="og:title" content="QR코드 생성하기 - URL/텍스트/연락처 무료 온라인 QR코드 생성기 | 유틸박스" />
+        <meta property="og:description" content="QR코드 생성 무료 온라인 도구! URL, 텍스트, 연락처 정보를 QR코드로 빠르고 쉽게 변환하세요. 커스터마이징 가능, 고품질, 즉시 다운로드." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://utilbox-mu.vercel.app/qr-code-generator" />
         <meta property="og:site_name" content="유틸박스" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="QR 코드 생성기 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스" />
-        <meta name="twitter:description" content="막내사원 대신하는 QR 코드 생성기! 텍스트, URL, 연락처 정보를 QR 코드로 빠르고 쉽게 변환하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+        <meta name="twitter:title" content="QR코드 생성하기 - URL/텍스트/연락처 무료 온라인 QR코드 생성기 | 유틸박스" />
+        <meta name="twitter:description" content="QR코드 생성 무료 온라인 도구! URL, 텍스트, 연락처 정보를 QR코드로 빠르고 쉽게 변환하세요. 커스터마이징 가능, 고품질, 즉시 다운로드." />
         <link rel="canonical" href="https://utilbox-mu.vercel.app/qr-code-generator" />
       </Head>
       <div style={{ padding: '24px', maxWidth: '1400px', margin: '0 auto' }}>

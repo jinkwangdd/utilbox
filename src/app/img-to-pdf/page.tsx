@@ -227,17 +227,17 @@ export default function ImgToPdfPage() {
   return (
     <Layout>
       <Head>
-        <title>IMG to PDF 변환 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스</title>
-        <meta name="description" content="막내사원 대신하는 IMG to PDF 변환 도구! JPG, PNG, GIF, BMP, WebP 이미지를 빠르고 쉽게 PDF로 변환하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
-        <meta name="keywords" content="IMG to PDF, 이미지 PDF 변환, 업무 끝판왕, 막내사원, 사무실 필수, 무료 도구, 이미지 PDF, JPG PDF, PNG PDF, 온라인 PDF 변환, 웹 유틸리티, 업무 자동화" />
-        <meta property="og:title" content="IMG to PDF 변환 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스" />
-        <meta property="og:description" content="막내사원 대신하는 IMG to PDF 변환 도구! JPG, PNG, GIF, BMP, WebP 이미지를 빠르고 쉽게 PDF로 변환하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+        <title>이미지를 PDF로 변환하기 - JPG/PNG/GIF/WebP → PDF 무료 온라인 변환기 | 유틸박스</title>
+        <meta name="description" content="이미지를 PDF로 변환하는 무료 온라인 도구! JPG, PNG, GIF, BMP, WebP 이미지를 빠르고 쉽게 PDF로 변환하세요. 고품질, 무료, 즉시 다운로드 가능." />
+        <meta name="keywords" content="이미지 PDF 변환, JPG PDF 변환, PNG PDF 변환, GIF PDF 변환, WebP PDF 변환, 이미지 to PDF, 온라인 PDF 변환기, 무료 PDF 변환, 이미지 PDF 변환기, 사진 PDF 변환" />
+        <meta property="og:title" content="이미지를 PDF로 변환하기 - JPG/PNG/GIF/WebP → PDF 무료 온라인 변환기 | 유틸박스" />
+        <meta property="og:description" content="이미지를 PDF로 변환하는 무료 온라인 도구! JPG, PNG, GIF, BMP, WebP 이미지를 빠르고 쉽게 PDF로 변환하세요. 고품질, 무료, 즉시 다운로드 가능." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://utilbox-mu.vercel.app/img-to-pdf" />
         <meta property="og:site_name" content="유틸박스" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="IMG to PDF 변환 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스" />
-        <meta name="twitter:description" content="막내사원 대신하는 IMG to PDF 변환 도구! JPG, PNG, GIF, BMP, WebP 이미지를 빠르고 쉽게 PDF로 변환하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+        <meta name="twitter:title" content="이미지를 PDF로 변환하기 - JPG/PNG/GIF/WebP → PDF 무료 온라인 변환기 | 유틸박스" />
+        <meta name="twitter:description" content="이미지를 PDF로 변환하는 무료 온라인 도구! JPG, PNG, GIF, BMP, WebP 이미지를 빠르고 쉽게 PDF로 변환하세요. 고품질, 무료, 즉시 다운로드 가능." />
         <link rel="canonical" href="https://utilbox-mu.vercel.app/img-to-pdf" />
       </Head>
       <div style={{ padding: '24px', maxWidth: '1400px', margin: '0 auto' }}>

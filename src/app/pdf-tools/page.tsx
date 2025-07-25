@@ -406,17 +406,17 @@ export default function PdfToolsPage() {
   return (
     <Layout>
       <Head>
-        <title>PDF 도구 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스</title>
-        <meta name="description" content="막내사원 대신하는 PDF 도구! PDF 분할, 합병, 정보 확인을 빠르고 쉽게 하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
-        <meta name="keywords" content="PDF 도구, PDF 분할, PDF 합병, 업무 끝판왕, 막내사원, 사무실 필수, 무료 도구, PDF 편집, 온라인 PDF, 웹 유틸리티, 업무 자동화" />
-        <meta property="og:title" content="PDF 도구 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스" />
-        <meta property="og:description" content="막내사원 대신하는 PDF 도구! PDF 분할, 합병, 정보 확인을 빠르고 쉽게 하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+        <title>PDF 도구 - PDF 분할/합병/정보확인 무료 온라인 PDF 편집 도구 | 유틸박스</title>
+        <meta name="description" content="PDF 도구 무료 온라인 서비스! PDF 분할, 합병, 정보 확인을 빠르고 쉽게 하세요. 강력한 PDF 편집 기능, 무료, 즉시 처리." />
+        <meta name="keywords" content="PDF 도구, PDF 분할, PDF 합병, PDF 정보 확인, 온라인 PDF 편집, 무료 PDF 도구, PDF 페이지 분할, PDF 파일 합치기, PDF 메타데이터" />
+        <meta property="og:title" content="PDF 도구 - PDF 분할/합병/정보확인 무료 온라인 PDF 편집 도구 | 유틸박스" />
+        <meta property="og:description" content="PDF 도구 무료 온라인 서비스! PDF 분할, 합병, 정보 확인을 빠르고 쉽게 하세요. 강력한 PDF 편집 기능, 무료, 즉시 처리." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://utilbox-mu.vercel.app/pdf-tools" />
         <meta property="og:site_name" content="유틸박스" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="PDF 도구 - 막내사원 대신하는 업무 끝판왕, 사무실 필수 무료 도구 | 유틸박스" />
-        <meta name="twitter:description" content="막내사원 대신하는 PDF 도구! PDF 분할, 합병, 정보 확인을 빠르고 쉽게 하세요. 사무실 필수, 업무 자동화, 무료 웹 유틸리티 끝판왕." />
+        <meta name="twitter:title" content="PDF 도구 - PDF 분할/합병/정보확인 무료 온라인 PDF 편집 도구 | 유틸박스" />
+        <meta name="twitter:description" content="PDF 도구 무료 온라인 서비스! PDF 분할, 합병, 정보 확인을 빠르고 쉽게 하세요. 강력한 PDF 편집 기능, 무료, 즉시 처리." />
         <link rel="canonical" href="https://utilbox-mu.vercel.app/pdf-tools" />
       </Head>
       <div style={{ padding: '24px', maxWidth: '1400px', margin: '0 auto' }}>
